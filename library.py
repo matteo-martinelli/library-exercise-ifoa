@@ -59,7 +59,7 @@ class Library(object):
         average_pages_in_library = total_pages_in_library / len(self._library_collection)
         return average_pages_in_library
 
-    def search_book_by_name(self, book_by_name):
+    def search_book_by_name_in_lib_collection(self, book_by_name):
         if not isinstance(book_by_name, str):
             book_by_name = str(book_by_name)
         book_by_name = book_by_name.strip().lower()
@@ -71,6 +71,18 @@ class Library(object):
                 break
         return book_found
 
+    def search_lent_book_lent_collection(self, book_by_name):
+        if not isinstance(book_by_name, str):
+            book_by_name = str(book_by_name)
+        book_by_name = book_by_name.strip().lower()
+        dict_found = None
+        for elem in self._lent_collection:
+            if elem['lent book'].title.lower() == book_by_name:
+                print('Dict of the lent book found!')
+                dict_found = elem
+                break
+        return dict_found
+
     def lend_book(self, lender_name, book_title, lending_date, returning_date):
         if not isinstance(lender_name, str):
             raise ValueError('The name of the lender must be a string.')
@@ -81,7 +93,7 @@ class Library(object):
             raise ValueError('The lending date must be a string.')
         if not isinstance(returning_date, str):
             raise ValueError('The returning date must be a string.')
-        book_to_lend = self.search_book_by_name(book_title)
+        book_to_lend = self.search_book_by_name_in_lib_collection(book_title)
         if not isinstance(book_to_lend, Book):
             raise ValueError('Book not found.')
         self._library_collection.remove(book_to_lend)
@@ -93,6 +105,16 @@ class Library(object):
         }
         self._lent_collection.append(dict_of_lent_book)
         print(f'Book successfully lent to {lender_name}!')
+
+    def return_book(self, book_title):
+        if not isinstance(book_title, str):
+            raise ValueError('The title of the book must be a string.')
+        returning_dict = self.search_lent_book_lent_collection(book_title)
+        if not isinstance(returning_dict, dict):
+            raise ValueError('Dict of the lent book not found.')
+        self._lent_collection.remove(returning_dict)
+        self._library_collection.append(returning_dict['lent book'])
+        print('Book successfully returned!')
 
     def __str__(self):
         string_to_return = (f'{self._library_name} library of {self._library_city} city\n'
