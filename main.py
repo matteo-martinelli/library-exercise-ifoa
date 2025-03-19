@@ -1,5 +1,7 @@
 from book import Book
+from library import Library
 
 if __name__ == '__main__':
-    my_book = Book(123, 'J.K. Rowling', 2000, 100)
-    print(my_book)
+    my_library = Library('Babilonia', 'Scandiano')
+    my_library.load_book_collection_from_file()
+    print(my_library)
