@@ -24,5 +24,27 @@ class Library(object):
             raise ValueError('The book must be a Book object.')
         self._library_collection.append(book)
 
-    def load_book_collection_from_file(self, path):
-        pass
+    def load_book_collection_from_file(self):
+        path = 'book_collection.txt'
+        try:
+            with open(path, 'r') as f:
+                content = f.read()
+                books_elem = content.strip().split('-')
+                books_list = list()
+                for elem in books_elem:
+                    book_elem = elem.strip().split('\n')
+                    books_list.append(book_elem)
+                for book in books_list:
+                    book_to_add = Book(book[0], book[1], int(book[2]), int(book[3]))
+                    self._library_collection.append(book_to_add)
+        except FileNotFoundError:
+            print('File does not exist!')
+
+    def __str__(self):
+        string_to_return = (f'{self._library_name} library of {self._library_city} city\n'
+                            f'Books in collection: {len(self._library_collection)}\n'
+                            f'Books List: [\n')
+        for book in self._library_collection:
+            string_to_return += f'\t{book.title}\n'
+        string_to_return += ']'
+        return string_to_return
