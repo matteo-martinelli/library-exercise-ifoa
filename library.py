@@ -10,6 +10,7 @@ class Library(object):
         self._library_name = library_name
         self._library_city = library_city
         self._library_collection = []
+        self._lent_collection = []
 
     @property
     def library_name(self):
@@ -40,13 +41,6 @@ class Library(object):
         except FileNotFoundError:
             print('File does not exist!')
 
-    """
-    File to write: 
-    library name: name_of_the_library
-    library city: city_of_the_library
-    books in collection: number_of_books_in_collection
-    average pages in collection: average_pages_in_collection
-    """
     def write_to_txt_file(self):
         string_to_write = (f'library name: {self._library_name}\n'
                            f'library city: {self._library_city}\n'
@@ -57,12 +51,48 @@ class Library(object):
                 f.write(string_to_write)
         except Exception as e:
             print(e)
+
     def calculate_average_pages(self):
         total_pages_in_library = 0
         for elem in self._library_collection:
             total_pages_in_library += elem.total_pages
         average_pages_in_library = total_pages_in_library / len(self._library_collection)
         return average_pages_in_library
+
+    def search_book_by_name(self, book_by_name):
+        if not isinstance(book_by_name, str):
+            book_by_name = str(book_by_name)
+        book_by_name = book_by_name.strip().lower()
+        book_found = None
+        for elem in self._library_collection:
+            if elem.title.lower() == book_by_name:
+                print('Book found!')
+                book_found = elem
+                break
+        return book_found
+
+    def lend_book(self, lender_name, book_title, lending_date, returning_date):
+        if not isinstance(lender_name, str):
+            raise ValueError('The name of the lender must be a string.')
+        if not isinstance(book_title, str):
+            raise ValueError('The title of the book must be a string.')
+        # Control that dates follow the correct pattern
+        if not isinstance(lending_date, str):
+            raise ValueError('The lending date must be a string.')
+        if not isinstance(returning_date, str):
+            raise ValueError('The returning date must be a string.')
+        book_to_lend = self.search_book_by_name(book_title)
+        if not isinstance(book_to_lend, Book):
+            raise ValueError('Book not found.')
+        self._library_collection.remove(book_to_lend)
+        dict_of_lent_book = {
+            'lender name': lender_name,
+            'lending date': lending_date,
+            'returning date': returning_date,
+            'lent book': book_to_lend
+        }
+        self._lent_collection.append(dict_of_lent_book)
+        print(f'Book successfully lent to {lender_name}!')
 
     def __str__(self):
         string_to_return = (f'{self._library_name} library of {self._library_city} city\n'
