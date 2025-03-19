@@ -1,0 +1,4 @@
+library name: Babilonia
+library city: Scandiano
+books in collection: 2
+average pages in collection: 96.0
