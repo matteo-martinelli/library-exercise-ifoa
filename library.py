@@ -40,6 +40,30 @@ class Library(object):
         except FileNotFoundError:
             print('File does not exist!')
 
+    """
+    File to write: 
+    library name: name_of_the_library
+    library city: city_of_the_library
+    books in collection: number_of_books_in_collection
+    average pages in collection: average_pages_in_collection
+    """
+    def write_to_txt_file(self):
+        string_to_write = (f'library name: {self._library_name}\n'
+                           f'library city: {self._library_city}\n'
+                           f'books in collection: {len(self._library_collection)}\n'
+                           f'average pages in collection: {self.calculate_average_pages()}')
+        try:
+            with open('library_summary.txt', 'a') as f:
+                f.write(string_to_write)
+        except Exception as e:
+            print(e)
+    def calculate_average_pages(self):
+        total_pages_in_library = 0
+        for elem in self._library_collection:
+            total_pages_in_library += elem.total_pages
+        average_pages_in_library = total_pages_in_library / len(self._library_collection)
+        return average_pages_in_library
+
     def __str__(self):
         string_to_return = (f'{self._library_name} library of {self._library_city} city\n'
                             f'Books in collection: {len(self._library_collection)}\n'
